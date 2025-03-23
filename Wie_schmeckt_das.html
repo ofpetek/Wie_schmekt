@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Wie schmeckt das?</title>
+    <style>
+        body {
+            font-family: Comic Sans MS, cursive;
+            background-color: #f0f9ff;
+            text-align: center;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .food-emoji {
+            font-size: 80px;
+            margin: 20px;
+        }
+        .button {
+            background-color: #ffd700;
+            border: 3px solid #ffb300;
+            border-radius: 15px;
+            padding: 15px 30px;
+            margin: 10px;
+            font-size: 20px;
+            cursor: pointer;
+            transition: transform 0.2s;
+            width: 180px;
+        }
+        #startButton {
+            font-size: 30px;
+            padding: 20px 40px;
+        }
+        .correct {
+            background-color: #90EE90 !important;
+        }
+        .wrong {
+            background-color: #FFB6C1 !important;
+        }
+        .button-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Wie schmeckt das? 🍴</h1>
+        <button id="startButton" class="button">Spiel starten!</button>
+        <div id="gameContent" style="display:none;">
+            <div id="frage" class="frage"></div>
+            <div id="emoji" class="food-emoji"></div>
+            <div class="button-container" id="buttons"></div>
+            <div id="antwort" style="font-size:24px; margin:20px;"></div>
+        </div>
+    </div>
+
+    <script>
+        const fragen = [
+            {nahrung: "die Zitrone", emoji: "🍋", geschmack: "sauer"},
+            {nahrung: "die Schokolade", emoji: "🍫", geschmack: "süß"},
+            {nahrung: "die Pizza", emoji: "🍕", geschmack: "herzhaft"},
+            {nahrung: "die Chili", emoji: "🌶️", geschmack: "scharf"},
+            {nahrung: "die Milch", emoji: "🥛", geschmack: "mild"},
+            {nahrung: "der Apfel", emoji: "🍎", geschmack: "süß"},
+            {nahrung: "die Suppe", emoji: "🍲", geschmack: "herzhaft"},
+            {nahrung: "der Honig", emoji: "🍯", geschmack: "süß"},
+            {nahrung: "die Brezel", emoji: "🥨", geschmack: "salzig"},
+            {nahrung: "der Ingwer", emoji: "🫚", geschmack: "scharf"},
+            {nahrung: "der Joghurt", emoji: "🥣", geschmack: "sauer"},
+            {nahrung: "die Ananas", emoji: "🍍", geschmack: "süß"},
+            {nahrung: "der Senf", emoji: "🟡", geschmack: "scharf"},
+            {nahrung: "die Kartoffel", emoji: "🥔", geschmack: "mild"},
+            {nahrung: "die Nudeln", emoji: "🍝", geschmack: "herzhaft"},
+            {nahrung: "der Kuchen", emoji: "🍰", geschmack: "süß"},
+            {nahrung: "die Gurke", emoji: "🥒", geschmack: "mild"},
+            {nahrung: "der Pfeffer", emoji: "🌶️", geschmack: "scharf"},
+            {nahrung: "die Erdbeere", emoji: "🍓", geschmack: "süß"},
+            {nahrung: "der Käse", emoji: "🧀", geschmack: "salzig"},
+            {nahrung: "die Limette", emoji: "🍈", geschmack: "sauer"},
+            {nahrung: "das Eis", emoji: "🍦", geschmack: "süß"},
+            {nahrung: "die Tomate", emoji: "🍅", geschmack: "mild"},
+            {nahrung: "der Döner", emoji: "🌯", geschmack: "herzhaft"},
+            {nahrung: "die Kiwi", emoji: "🥝", geschmack: "sauer"},
+            {nahrung: "die Wassermelone", emoji: "🍉", geschmack: "süß"},
+            {nahrung: "der Knoblauch", emoji: "🧄", geschmack: "scharf"},
+            {nahrung: "die Marmelade", emoji: "🍯", geschmack: "süß"},
+            {nahrung: "der Reis", emoji: "🍚", geschmack: "mild"},
+            {nahrung: "die Zwiebel", emoji: "🧅", geschmack: "scharf"},
+            {nahrung: "die Banane", emoji: "🍌", geschmack: "süß"},
+            {nahrung: "der Fisch", emoji: "🐟", geschmack: "herzhaft"},
+            {nahrung: "die Orange", emoji: "🍊", geschmack: "sauer"},
+            {nahrung: "das Brot", emoji: "🍞", geschmack: "mild"},
+            {nahrung: "die Nüsse", emoji: "🥜", geschmack: "salzig"},
+            {nahrung: "die Trauben", emoji: "🍇", geschmack: "süß"},
+            {nahrung: "der Spinat", emoji: "🍃", geschmack: "mild"},
+            {nahrung: "die Lakritze", emoji: "🖤", geschmack: "sauer"},
+            {nahrung: "der Hamburger", emoji: "🍔", geschmack: "herzhaft"},
+            {nahrung: "die Möhre", emoji: "🥕", geschmack: "mild"},
+            {nahrung: "der Zucker", emoji: "🍚", geschmack: "süß"},
+            {nahrung: "die Paprika", emoji: "🫑", geschmack: "mild"},
+            {nahrung: "der Essig", emoji: "🍶", geschmack: "sauer"},
+            {nahrung: "die Butter", emoji: "🧈", geschmack: "mild"},
+            {nahrung: "der Lolli", emoji: "🍭", geschmack: "süß"},
+            {nahrung: "die Pilze", emoji: "🍄", geschmack: "mild"},
+            {nahrung: "der Saft", emoji: "🧃", geschmack: "süß"},
+            {nahrung: "die Pommes", emoji: "🍟", geschmack: "salzig"},
+            {nahrung: "der Toast", emoji: "🍞", geschmack: "mild"},
+            {nahrung: "die Himbeere", emoji: "🍇", geschmack: "sauer"},
+            {nahrung: "der Pfannkuchen", emoji: "🥞", geschmack: "süß"}
+        ];
+
+        const geschmackswoerter = ["süß", "sauer", "mild", "scharf", "herzhaft", "salzig"];
+        let aktuelleFrage;
+
+        function starteSpiel() {
+            document.getElementById("startButton").style.display = "none";
+            document.getElementById("gameContent").style.display = "block";
+            neueFrage();
+        }
+
+        function sprechen(text) {
+            if(window.speechSynthesis) {
+                const sprache = new SpeechSynthesisUtterance(text);
+                sprache.lang = 'de-DE';
+                sprache.rate = 0.9;
+                window.speechSynthesis.speak(sprache);
+            }
+        }
+
+        function neueFrage() {
+            aktuelleFrage = fragen[Math.floor(Math.random() * fragen.length)];
+            document.getElementById("emoji").textContent = aktuelleFrage.emoji;
+            const frageText = `Wie schmeckt ${aktuelleFrage.nahrung} ?`;
+            document.getElementById("frage").textContent = frageText;
+            
+            // Frage vorlesen
+            sprechen(frageText);
+
+            const buttons = document.getElementById("buttons");
+            buttons.innerHTML = "";
+            
+            // Alle Adjektive mischen
+            const gemischteAntworten = [...geschmackswoerter].sort(() => Math.random() - 0.5);
+
+            gemischteAntworten.forEach(antwort => {
+                const button = document.createElement("button");
+                button.className = "button";
+                button.textContent = antwort;
+                button.onclick = () => pruefeAntwort(antwort);
+                buttons.appendChild(button);
+            });
+        }
+
+        function pruefeAntwort(antwort) {
+            const buttons = document.querySelectorAll(".button");
+            if(antwort === aktuelleFrage.geschmack) {
+                buttons.forEach(btn => {
+                    btn.disabled = true;
+                    if(btn.textContent === antwort) btn.classList.add("correct");
+                });
+                
+                const satz = `${aktuelleFrage.nahrung} schmeckt ${antwort}.`;
+                document.getElementById("antwort").textContent = satz;
+                sprechen(satz);
+                
+                setTimeout(neueFrage, 2500);
+            } else {
+                buttons.forEach(btn => {
+                    if(btn.textContent === antwort) btn.classList.add("wrong");
+                });
+                document.getElementById("antwort").textContent = "Versuche es nochmal!";
+                sprechen("Versuche es nochmal!");
+            }
+        }
+
+        document.getElementById("startButton").addEventListener('click', starteSpiel);
+    </script>
+</body>
+</html>
